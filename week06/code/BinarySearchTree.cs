@@ -2,21 +2,18 @@ using System;
 
 namespace MyApp.Trees
 {
-    // Binary Search Tree Node Class
     public class BinarySearchTree
     {
-        // Properties for the node's data and its left and right children
         public int Data { get; set; }
         public BinarySearchTree? Left { get; private set; }
         public BinarySearchTree? Right { get; private set; }
 
-        // Constructor to initialize the node with data
         public BinarySearchTree(int data)
         {
             this.Data = data;
         }
 
-        // Insert a new value into the Binary Search Tree (unique values only)
+        // Insert Unique Values Only
         public void Insert(int value)
         {
             if (value < this.Data)
@@ -33,10 +30,9 @@ namespace MyApp.Trees
                 else
                     this.Right.Insert(value);
             }
-            // If value is equal to Data, do nothing (no duplicates allowed)
         }
 
-        // Check if a value exists in the Binary Search Tree
+        // Check if a value exists
         public bool Contains(int value)
         {
             if (value == this.Data)
@@ -48,37 +44,40 @@ namespace MyApp.Trees
             return this.Right?.Contains(value) ?? false;
         }
 
-        // Get the height of the Binary Search Tree
+        // Traverse Backwards (Right, Root, Left)
+        public void TraverseBackwards()
+        {
+            this.Right?.TraverseBackwards();
+            Console.Write(this.Data + " ");
+            this.Left?.TraverseBackwards();
+        }
+
+        // Get Tree Height
         public int GetHeight()
         {
             int leftHeight = this.Left?.GetHeight() ?? 0;
             int rightHeight = this.Right?.GetHeight() ?? 0;
-
             return Math.Max(leftHeight, rightHeight) + 1;
         }
 
-        // In-order traversal: Left, Root, Right
-        public void TraverseInOrder()
+        // Create Tree from Sorted List
+        public static BinarySearchTree CreateFromSortedList(int[] sortedList)
         {
-            this.Left?.TraverseInOrder();
-            Console.Write(this.Data + " ");
-            this.Right?.TraverseInOrder();
+            return CreateFromSortedListHelper(sortedList, 0, sortedList.Length - 1);
         }
 
-        // Pre-order traversal: Root, Left, Right
-        public void TraversePreOrder()
+        private static BinarySearchTree? CreateFromSortedListHelper(int[] sortedList, int start, int end)
         {
-            Console.Write(this.Data + " ");
-            this.Left?.TraversePreOrder();
-            this.Right?.TraversePreOrder();
-        }
+            if (start > end)
+                return null;
 
-        // Post-order traversal: Left, Right, Root
-        public void TraversePostOrder()
-        {
-            this.Left?.TraversePostOrder();
-            this.Right?.TraversePostOrder();
-            Console.Write(this.Data + " ");
+            int mid = (start + end) / 2;
+            BinarySearchTree node = new BinarySearchTree(sortedList[mid]);
+
+            node.Left = CreateFromSortedListHelper(sortedList, start, mid - 1);
+            node.Right = CreateFromSortedListHelper(sortedList, mid + 1, end);
+
+            return node;
         }
     }
 }
@@ -89,10 +88,8 @@ namespace MyApp
     {
         static void Main(string[] args)
         {
-            // Initialize the Binary Search Tree with a root value
-            MyApp.Trees.BinarySearchTree tree = new MyApp.Trees.BinarySearchTree(10);
-
-            // Insert values into the tree
+            // Create a new Binary Search Tree
+            Trees.BinarySearchTree tree = new Trees.BinarySearchTree(10);
             tree.Insert(5);
             tree.Insert(15);
             tree.Insert(3);
@@ -100,26 +97,23 @@ namespace MyApp
             tree.Insert(12);
             tree.Insert(18);
 
-            // Check if certain values are contained in the tree
+            // Problem 2 - Contains
             Console.WriteLine("Contains 7: " + tree.Contains(7));   // True
             Console.WriteLine("Contains 20: " + tree.Contains(20)); // False
 
-            // Get the height of the tree
+            // Problem 3 - Traverse Backwards
+            Console.WriteLine("Traverse Backwards:");
+            tree.TraverseBackwards(); // 18 15 12 10 7 5 3
+            Console.WriteLine();
+
+            // Problem 4 - Tree Height
             Console.WriteLine("Height of the tree: " + tree.GetHeight());
 
-            // In-order traversal (Left, Root, Right)
-            Console.WriteLine("In-order traversal:");
-            tree.TraverseInOrder(); // Output: 3 5 7 10 12 15 18
-            Console.WriteLine();
-
-            // Pre-order traversal (Root, Left, Right)
-            Console.WriteLine("Pre-order traversal:");
-            tree.TraversePreOrder(); // Output: 10 5 3 7 15 12 18
-            Console.WriteLine();
-
-            // Post-order traversal (Left, Right, Root)
-            Console.WriteLine("Post-order traversal:");
-            tree.TraversePostOrder(); // Output: 3 7 5 12 18 15 10
+            // Problem 5 - Create Tree from Sorted List
+            int[] sortedList = { 1, 2, 3, 4, 5, 6, 7 };
+            Trees.BinarySearchTree balancedTree = Trees.BinarySearchTree.CreateFromSortedList(sortedList);
+            Console.WriteLine("In-order Traversal of Balanced Tree:");
+            balancedTree.TraverseBackwards();
             Console.WriteLine();
         }
     }
