@@ -76,4 +76,9 @@ public class Maze
         // Otherwise, we are good
         return true;
     }
+
+    internal bool IsValidMove(int x, int v)
+    {
+        throw new NotImplementedException();
+    }
 }
