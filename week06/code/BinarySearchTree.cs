@@ -1,168 +1,126 @@
 using System;
 
-public class Node
+namespace MyApp.Trees
 {
-    public int Data { get; set; }
-    public Node? Left { get; private set; } // Nullable reference type
-    public Node? Right { get; private set; } // Nullable reference type
-
-    // Constructor initializes Data, Left and Right are nullable (null by default)
-    public Node(int data)
+    // Binary Search Tree Node Class
+    public class BinarySearchTree
     {
-        this.Data = data;
-        Left = null; // Explicitly set to null
-        Right = null; // Explicitly set to null
-    }
+        // Properties for the node's data and its left and right children
+        public int Data { get; set; }
+        public BinarySearchTree? Left { get; private set; }
+        public BinarySearchTree? Right { get; private set; }
 
-    // Insert method to add a new value to the tree
-    public void Insert(int value)
-    {
-        if (value < Data)
+        // Constructor to initialize the node with data
+        public BinarySearchTree(int data)
         {
-            if (Left == null)
-                Left = new Node(value); // Create new node if left is null
-            else
-                Left.Insert(value); // Recursively insert in the left subtree
+            this.Data = data;
         }
-        else
+
+        // Insert a new value into the Binary Search Tree (unique values only)
+        public void Insert(int value)
         {
-            if (Right == null)
-                Right = new Node(value); // Create new node if right is null
-            else
-                Right.Insert(value); // Recursively insert in the right subtree
+            if (value < this.Data)
+            {
+                if (this.Left is null)
+                    this.Left = new BinarySearchTree(value);
+                else
+                    this.Left.Insert(value);
+            }
+            else if (value > this.Data)
+            {
+                if (this.Right is null)
+                    this.Right = new BinarySearchTree(value);
+                else
+                    this.Right.Insert(value);
+            }
+            // If value is equal to Data, do nothing (no duplicates allowed)
         }
-    }
 
-    // Method to check if a value exists in the tree
-    public bool Contains(int value)
-    {
-        if (value == Data)
-            return true; // Value found
+        // Check if a value exists in the Binary Search Tree
+        public bool Contains(int value)
+        {
+            if (value == this.Data)
+                return true;
 
-        if (value < Data)
-            return Left?.Contains(value) ?? false; // Safe handling for Left being null
+            if (value < this.Data)
+                return this.Left?.Contains(value) ?? false;
 
-        return Right?.Contains(value) ?? false; // Safe handling for Right being null
-    }
+            return this.Right?.Contains(value) ?? false;
+        }
 
-    // Method to get the height of the tree
-    public int GetHeight()
-    {
-        // Handle null values for Left and Right subtrees using null-coalescing operator
-        int leftHeight = Left?.GetHeight() ?? 0; // If Left is null, return 0
-        int rightHeight = Right?.GetHeight() ?? 0; // If Right is null, return 0
+        // Get the height of the Binary Search Tree
+        public int GetHeight()
+        {
+            int leftHeight = this.Left?.GetHeight() ?? 0;
+            int rightHeight = this.Right?.GetHeight() ?? 0;
 
-        return 1 + Math.Max(leftHeight, rightHeight); // 1 + max height of left or right subtree
-    }
+            return Math.Max(leftHeight, rightHeight) + 1;
+        }
 
-    // Method to traverse the tree in-order (Left, Root, Right)
-    public void TraverseInOrder()
-    {
-        Left?.TraverseInOrder(); // Traverse left subtree if it exists
-        Console.Write(Data + " "); // Visit the current node
-        Right?.TraverseInOrder(); // Traverse right subtree if it exists
-    }
+        // In-order traversal: Left, Root, Right
+        public void TraverseInOrder()
+        {
+            this.Left?.TraverseInOrder();
+            Console.Write(this.Data + " ");
+            this.Right?.TraverseInOrder();
+        }
 
-    // Method to traverse the tree in pre-order (Root, Left, Right)
-    public void TraversePreOrder()
-    {
-        Console.Write(Data + " "); // Visit the current node
-        Left?.TraversePreOrder(); // Traverse left subtree if it exists
-        Right?.TraversePreOrder(); // Traverse right subtree if it exists
-    }
+        // Pre-order traversal: Root, Left, Right
+        public void TraversePreOrder()
+        {
+            Console.Write(this.Data + " ");
+            this.Left?.TraversePreOrder();
+            this.Right?.TraversePreOrder();
+        }
 
-    // Method to traverse the tree in post-order (Left, Right, Root)
-    public void TraversePostOrder()
-    {
-        Left?.TraversePostOrder(); // Traverse left subtree if it exists
-        Right?.TraversePostOrder(); // Traverse right subtree if it exists
-        Console.Write(Data + " "); // Visit the current node
+        // Post-order traversal: Left, Right, Root
+        public void TraversePostOrder()
+        {
+            this.Left?.TraversePostOrder();
+            this.Right?.TraversePostOrder();
+            Console.Write(this.Data + " ");
+        }
     }
 }
 
-public class BinaryTree
+namespace MyApp
 {
-    public Node? Root { get; private set; }
-
-    // Method to insert a value into the tree
-    public void Insert(int value)
+    class Program
     {
-        if (Root == null)
-            Root = new Node(value); // Create the root node if the tree is empty
-        else
-            Root.Insert(value); // Insert the value into the tree starting from the root
-    }
+        static void Main(string[] args)
+        {
+            // Initialize the Binary Search Tree with a root value
+            MyApp.Trees.BinarySearchTree tree = new MyApp.Trees.BinarySearchTree(10);
 
-    // Method to check if the tree contains a value
-    public bool Contains(int value)
-    {
-        return Root?.Contains(value) ?? false; // Return false if the root is null
-    }
+            // Insert values into the tree
+            tree.Insert(5);
+            tree.Insert(15);
+            tree.Insert(3);
+            tree.Insert(7);
+            tree.Insert(12);
+            tree.Insert(18);
 
-    // Method to get the height of the tree
-    public int GetHeight()
-    {
-        return Root?.GetHeight() ?? 0; // Return 0 if the root is null
-    }
+            // Check if certain values are contained in the tree
+            Console.WriteLine("Contains 7: " + tree.Contains(7));   // True
+            Console.WriteLine("Contains 20: " + tree.Contains(20)); // False
 
-    // Method to traverse the tree in order
-    public void TraverseInOrder()
-    {
-        if (Root != null)
-            Root.TraverseInOrder(); // Traverse the tree starting from the root
-    }
+            // Get the height of the tree
+            Console.WriteLine("Height of the tree: " + tree.GetHeight());
 
-    // Method to traverse the tree in pre-order
-    public void TraversePreOrder()
-    {
-        if (Root != null)
-            Root.TraversePreOrder(); // Traverse the tree starting from the root
-    }
+            // In-order traversal (Left, Root, Right)
+            Console.WriteLine("In-order traversal:");
+            tree.TraverseInOrder(); // Output: 3 5 7 10 12 15 18
+            Console.WriteLine();
 
-    // Method to traverse the tree in post-order
-    public void TraversePostOrder()
-    {
-        if (Root != null)
-            Root.TraversePostOrder(); // Traverse the tree starting from the root
-    }
-}
+            // Pre-order traversal (Root, Left, Right)
+            Console.WriteLine("Pre-order traversal:");
+            tree.TraversePreOrder(); // Output: 10 5 3 7 15 12 18
+            Console.WriteLine();
 
-public class Program
-{
-    public static void Main(string[] args)
-    {
-        // Example usage
-        BinaryTree tree = new BinaryTree();
-
-        // Insert values into the tree
-        tree.Insert(10);
-        tree.Insert(5);
-        tree.Insert(15);
-        tree.Insert(3);
-        tree.Insert(7);
-        tree.Insert(12);
-        tree.Insert(18);
-
-        // Check if a value is contained in the tree
-        Console.WriteLine("Contains 7: " + tree.Contains(7)); // True
-        Console.WriteLine("Contains 20: " + tree.Contains(20)); // False
-
-        // Get the height of the tree
-        Console.WriteLine("Height of the tree: " + tree.GetHeight());
-
-        // In-order traversal (Left, Root, Right)
-        Console.WriteLine("In-order traversal: ");
-        tree.TraverseInOrder(); // 3 5 7 10 12 15 18
-        Console.WriteLine();
-
-        // Pre-order traversal (Root, Left, Right)
-        Console.WriteLine("Pre-order traversal: ");
-        tree.TraversePreOrder(); // 10 5 3 7 15 12 18
-        Console.WriteLine();
-
-        // Post-order traversal (Left, Right, Root)
-        Console.WriteLine("Post-order traversal: ");
-        tree.TraversePostOrder(); // 3 7 5 12 18 15 10
-        Console.WriteLine();
+            // Post-order traversal (Left, Right, Root)
+            Console.WriteLine("Post-order traversal:");
+            tree.TraversePostOrder(); // Output: 3 7 5 12 18 15 10
+            Console.WriteLine();
+        }
     }
 }
