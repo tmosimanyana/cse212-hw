@@ -28,9 +28,8 @@ public static class Recursion
     /// # Problem 2 #
     /// #############
     /// Using recursion, insert permutations of length
-    /// 'size' from a list of 'letters' into the results list.  This function
-    /// should assume that each letter is unique (i.e. the 
-    /// function does not need to find unique permutations).
+    /// 'size' from a list of 'letters' into the results list.  
+    /// This function should assume that each letter is unique.
     /// </summary>
     public static void PermutationsChoose(List<string> results, string letters, int size, string word = "")
     {
@@ -110,34 +109,38 @@ public static class Recursion
     /// </summary>
     public static void SolveMaze(List<string> results, Maze maze, int x = 0, int y = 0, List<ValueTuple<int, int>>? currPath = null)
     {
-        // Initialize the currPath list if it's null
-        if (currPath == null) 
-        {
-            currPath = new List<ValueTuple<int, int>>();
-        }
-
-        // Base case: if the current position is the end, add the path to results
-        if (maze.IsEnd(x, y))
-        {
-            currPath.Add((x, y));
-            results.Add(string.Join("->", currPath));
-            return;
-        }
+        // Initialize currPath if it's null
+        currPath ??= new List<ValueTuple<int, int>>();
 
         // Add the current position to the path
         currPath.Add((x, y));
 
-        // Recursively try moving to adjacent positions (right, down, left, up)
-        if (maze.IsValidMove(x + 1, y))
+        // Base case: if we are at the end, add the current path to the results
+        if (maze.IsEnd(x, y))
+        {
+            results.Add(string.Join("->", currPath));
+            currPath.RemoveAt(currPath.Count - 1); // backtrack
+            return;
+        }
+
+        // Recursive case: explore adjacent cells (right, down, left, up)
+        // Try moving right (x+1, y)
+        if (maze.IsValidMove(currPath, x + 1, y))
             SolveMaze(results, maze, x + 1, y, currPath);
-        if (maze.IsValidMove(x, y + 1))
+
+        // Try moving down (x, y+1)
+        if (maze.IsValidMove(currPath, x, y + 1))
             SolveMaze(results, maze, x, y + 1, currPath);
-        if (maze.IsValidMove(x - 1, y))
+
+        // Try moving left (x-1, y)
+        if (maze.IsValidMove(currPath, x - 1, y))
             SolveMaze(results, maze, x - 1, y, currPath);
-        if (maze.IsValidMove(x, y - 1))
+
+        // Try moving up (x, y-1)
+        if (maze.IsValidMove(currPath, x, y - 1))
             SolveMaze(results, maze, x, y - 1, currPath);
 
-        // Backtrack by removing the last position from the path
+        // Backtrack: remove the current position from the path before returning
         currPath.RemoveAt(currPath.Count - 1);
     }
 }
