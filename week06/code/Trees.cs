@@ -12,7 +12,7 @@ public static class Trees
     public static BinarySearchTree CreateTreeFromSortedList(int[] sortedNumbers)
     {
         var bst = new BinarySearchTree(); // Create an empty BST to start with 
-        InsertMiddle(sortedNumbers, 0, sortedNumbers.Length - 1, bst);
+        InsertMiddle(sortedNumbers: sortedNumbers, 0, sortedNumbers.Length - 1, bst);
         return bst;
     }
 

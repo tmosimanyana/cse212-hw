@@ -13,6 +13,10 @@ namespace MyApp.Trees
             this.Data = data;
         }
 
+        public BinarySearchTree()
+        {
+        }
+
         // Insert Unique Values Only
         public void Insert(int value)
         {
